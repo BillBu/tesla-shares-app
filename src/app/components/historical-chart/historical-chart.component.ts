@@ -132,7 +132,7 @@ export class HistoricalChartComponent implements OnInit, OnDestroy {
       } else if (this.historicalCanvas) {
         // Handle empty data case
         const ctx = this.historicalCanvas.nativeElement.getContext('2d');
-        
+
         this.historicalChart = new Chart(ctx, {
           type: 'line',
           data: {
@@ -159,7 +159,7 @@ export class HistoricalChartComponent implements OnInit, OnDestroy {
             plugins: {
               title: {
                 display: true,
-                text: "No data available - Waiting for updates",
+                text: 'No data available - Waiting for updates',
               },
               tooltip: {
                 mode: 'index',

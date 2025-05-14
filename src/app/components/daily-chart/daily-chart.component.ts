@@ -120,7 +120,7 @@ export class DailyChartComponent implements OnInit, OnDestroy {
       } else if (this.dailyCanvas) {
         // Handle empty data case
         const ctx = this.dailyCanvas.nativeElement.getContext('2d');
-        
+
         this.dailyChart = new Chart(ctx, {
           type: 'line',
           data: {
@@ -147,7 +147,7 @@ export class DailyChartComponent implements OnInit, OnDestroy {
             plugins: {
               title: {
                 display: true,
-                text: "No data available - Waiting for updates",
+                text: 'No data available - Waiting for updates',
               },
               tooltip: {
                 mode: 'index',
