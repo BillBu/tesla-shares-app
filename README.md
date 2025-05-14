@@ -1,34 +1,73 @@
-# TeslaSharesApp
+# Tesla Shares App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.11.
+An Angular web application that tracks Tesla stock prices and converts the value to GB pounds using current exchange rates.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Live Tesla stock price tracking
+- Current USD to GBP exchange rate
+- Calculate USD and GBP value of your Tesla shares
+- View daily chart with 5-minute updates
+- View historical chart with data for the last 2 years
+- Time range selection for historical data (2 years, 1 year, 6 months, 1 month, 1 week)
 
-```bash
-ng serve
-```
+## Technology Stack
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Angular 19
+- Chart.js for data visualization
+- Bootstrap 5 for responsive UI
+- Alpha Vantage API for stock data
+- ExchangeRatesAPI for currency exchange rates
 
-## Code scaffolding
+## Demo
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The app is deployed on GitHub Pages at: https://[username].github.io/tesla-shares-app/
 
-```bash
-ng generate component component-name
-```
+## Development Setup
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Prerequisites
 
-```bash
-ng generate --help
-```
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+- Angular CLI (v19 or higher)
 
-## Building
+### Installation
 
-To build the project run:
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/[username]/tesla-shares-app.git
+   cd tesla-shares-app
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Configure API keys:
+
+   - Sign up for an API key at [Alpha Vantage](https://www.alphavantage.co/support/#api-key)
+   - Sign up for an API key at [ExchangeRatesAPI](https://exchangeratesapi.io/pricing/)
+   - Update the API keys in the respective service files
+
+4. Run the development server:
+
+   ```bash
+   ng serve
+   ```
+
+5. Navigate to `http://localhost:4200/` in your browser.
+
+## Deployment
+
+The app automatically deploys to GitHub Pages when changes are pushed to the main branch.
+
+## Notes
+
+- The Alpha Vantage free tier API has a limit of 5 API calls per minute and 500 per day
+- The ExchangeRatesAPI free tier does not support historical data, so the app uses mock data for demonstration purposes
 
 ```bash
 ng build

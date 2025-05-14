@@ -1,0 +1,46 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Current Values</h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Tesla Share Price</h5>
+              <h2 class="text-primary">${{ currentStockPrice$ | async | number:'1.2-2' }}</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">USD to GBP Exchange Rate</h5>
+              <h2 class="text-primary">{{ currentExchangeRate$ | async | number:'1.4-4' }}</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Value in USD</h5>
+              <h2 class="text-success">${{ currentUsdValue$ | async | number:'1.2-2' }}</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Value in GBP</h5>
+              <h2 class="text-success">£{{ currentGbpValue$ | async | number:'1.2-2' }}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<div class="container mt-3">
+  <div class="mb-3">
+    <label for="sharesInput" class="form-label">Number of Tesla Shares</label>
+    <div class="input-group">
+      <input type="number" class="form-control" id="sharesInput" [(ngModel)]="shares"
+        (ngModelChange)="onSharesChanged()" min="0" placeholder="Enter the number of shares">
+      <span class="input-group-text">shares</span>
+    </div>
+  </div>
+</div>
