@@ -11,7 +11,7 @@ import {
   providedIn: 'root',
 })
 export class ExchangeRateService {
-  private apiKey = ''; // You'll need to sign up for an API key at https://exchangeratesapi.io/
+  private apiKey = '0e6db16498af3aa3df932488fdc85748'; // You'll need to sign up for an API key at https://exchangeratesapi.io/
   private baseUrl = 'https://api.exchangeratesapi.io/v1';
   private fromCurrency = 'USD';
   private toCurrency = 'GBP';
