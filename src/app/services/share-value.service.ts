@@ -9,7 +9,8 @@ import { ShareValue } from '../models/share-value.model';
   providedIn: 'root',
 })
 export class ShareValueService {
-  private numberOfShares = new BehaviorSubject<number>(0);
+  private readonly SHARES_STORAGE_KEY = 'tesla-app-shares';
+  private numberOfShares = new BehaviorSubject<number>(this.getInitialShareCount());
   numberOfShares$ = this.numberOfShares.asObservable();
 
   // Observables
@@ -123,5 +124,27 @@ export class ShareValueService {
 
   updateNumberOfShares(shares: number) {
     this.numberOfShares.next(shares);
+    this.saveShareCountToLocalStorage(shares);
+  }
+
+  private getInitialShareCount(): number {
+    try {
+      const storedValue = localStorage.getItem(this.SHARES_STORAGE_KEY);
+      if (storedValue) {
+        const parsedValue = parseInt(storedValue, 10);
+        return !isNaN(parsedValue) ? parsedValue : 0;
+      }
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
+    }
+    return 0;
+  }
+
+  private saveShareCountToLocalStorage(shares: number): void {
+    try {
+      localStorage.setItem(this.SHARES_STORAGE_KEY, shares.toString());
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
   }
 }

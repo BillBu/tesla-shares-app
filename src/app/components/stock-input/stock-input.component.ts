@@ -13,7 +13,16 @@ import { ShareValueService } from '../../services/share-value.service';
 export class StockInputComponent {
   shares: number = 0;
 
-  constructor(private shareValueService: ShareValueService) {}
+  constructor(private shareValueService: ShareValueService) {
+    // Initialize shares from the service which loads from localStorage
+    this.shareValueService.numberOfShares$.subscribe(shares => {
+      this.shares = shares;
+    });
+    // Initialize with the value from the service (which loads from localStorage)
+    this.shareValueService.numberOfShares$.subscribe(shares => {
+      this.shares = shares;
+    });
+  }
 
   onSharesChanged() {
     if (this.shares !== null && !isNaN(this.shares)) {
