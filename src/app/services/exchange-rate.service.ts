@@ -11,8 +11,8 @@ import {
   providedIn: 'root',
 })
 export class ExchangeRateService {
-  private apiKey = '0e6db16498af3aa3df932488fdc85748'; // You'll need to sign up for an API key at https://exchangeratesapi.io/
-  private baseUrl = 'https://api.exchangeratesapi.io/v1';
+  // Using Frankfurter API which is completely free with no API key needed
+  private baseUrl = 'https://api.frankfurter.app';
   private fromCurrency = 'USD';
   private toCurrency = 'GBP';
 
@@ -37,15 +37,14 @@ export class ExchangeRateService {
   }
 
   getCurrentRate() {
-    // Use the real API since we now have an API key
+    // Use Frankfurter API which is free without API key limits
     this.http
-      .get<ExchangeRateResponse>(
-        `${this.baseUrl}/latest?access_key=${this.apiKey}&symbols=${this.toCurrency}`
+      .get<any>(
+        `${this.baseUrl}/latest?from=${this.fromCurrency}&to=${this.toCurrency}`
       )
       .pipe(
         map((response) => {
-          // Check if the API request was successful
-          if (response.success) {
+          if (response && response.rates) {
             const rate = response.rates[this.toCurrency];
             console.log('Live exchange rate fetched:', rate);
             return rate;
@@ -81,18 +80,18 @@ export class ExchangeRateService {
     start.setFullYear(start.getFullYear() - 2);
     const startStr = start.toISOString().split('T')[0];
 
-    // Note: The timeseries endpoint is typically only available with a paid subscription
-    // Check if we can access the timeseries endpoint
+    // Use Frankfurter's time-series endpoint which is free
     this.http
       .get<any>(
-        `${this.baseUrl}/timeseries?access_key=${this.apiKey}&start_date=${startStr}&end_date=${end}&symbols=${this.toCurrency}`
+        `${this.baseUrl}/${startStr}..${end}?from=${this.fromCurrency}&to=${this.toCurrency}`
       )
       .pipe(
         map((response) => {
-          if (response.success) {
+          if (response && response.rates) {
             console.log('Historical exchange rates fetched successfully');
             const rateData: ExchangeRateData[] = [];
 
+            // Process Frankfurter API response which has a different structure
             for (const dateStr in response.rates) {
               rateData.push({
                 date: new Date(dateStr),
