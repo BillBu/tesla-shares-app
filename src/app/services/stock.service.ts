@@ -9,7 +9,10 @@ import { StockData } from '../models/stock-data.model';
 })
 export class StockService {
   // Using Finnhub API - free tier with generous limits
-  private apiKey = 'd0ibs69r01qrfsaf63dgd0ibs69r01qrfsaf63e0'; // Replace with a real Finnhub API key after signing up
+  // You need to sign up at https://finnhub.io/ and get your own API key
+  // For browser-based requests, the API key must be sent as a query parameter named 'token'
+  // For server-to-server requests, you would use the 'X-Finnhub-Secret' header instead
+  private apiKey = 'd0idmthr01qrfsafgoi0'; // Replace with your actual Finnhub API key
   private baseUrl = 'https://finnhub.io/api/v1';
   private symbol = 'TSLA';
 
@@ -147,7 +150,7 @@ export class StockService {
   getQuote() {
     const params = {
       symbol: this.symbol,
-      token: this.apiKey,
+      token: this.apiKey, // API key as query parameter for browser-based requests
     };
 
     this.http
@@ -242,7 +245,7 @@ export class StockService {
       resolution: 'D', // Daily resolution
       from: fromTimestamp.toString(),
       to: toTimestamp.toString(),
-      token: this.apiKey,
+      token: this.apiKey, // API key as query parameter for browser-based requests
     };
 
     this.http
@@ -370,7 +373,7 @@ export class StockService {
       resolution: '5', // 5-minute intervals
       from: fromTimestamp.toString(),
       to: toTimestamp.toString(),
-      token: this.apiKey,
+      token: this.apiKey, // API key as query parameter for browser-based requests
     };
 
     this.http
