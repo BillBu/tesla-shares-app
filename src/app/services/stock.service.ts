@@ -12,7 +12,7 @@ export class StockService {
   // You need to sign up at https://finnhub.io/ and get your own API key
   // For browser-based requests, the API key must be sent as a query parameter named 'token'
   // For server-to-server requests, you would use the 'X-Finnhub-Secret' header instead
-  private apiKey = 'd0idmthr01qrfsafgoi0'; // Replace with your actual Finnhub API key
+  private apiKey = 'd0idlppr01qrfsafggl0d0idlppr01qrfsafgglg'; // Replace with your actual Finnhub API key
   private baseUrl = 'https://finnhub.io/api/v1';
   private symbol = 'TSLA';
 
@@ -158,6 +158,7 @@ export class StockService {
       .pipe(
         map((response) => {
           // Finnhub returns the current price in the 'c' field
+          console.log('Current price:', response?.c);
           return response?.c || 0;
         }),
         catchError((error) => {
