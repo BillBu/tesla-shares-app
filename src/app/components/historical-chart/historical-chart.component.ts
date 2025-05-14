@@ -27,12 +27,19 @@ export class HistoricalChartComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   historicalValues: ShareValue[] = [];
   timeRange: string = '2y';
+  private readonly STORAGE_KEY = 'tesla-shares-app-timerange';
 
   @ViewChild('historicalCanvas') historicalCanvas!: ElementRef;
 
   constructor(private shareValueService: ShareValueService) {}
 
   ngOnInit(): void {
+    // Load saved timeRange preference from localStorage if available
+    const savedTimeRange = localStorage.getItem(this.STORAGE_KEY);
+    if (savedTimeRange) {
+      this.timeRange = savedTimeRange;
+    }
+
     this.subscription.add(
       this.shareValueService.historicalValues$.subscribe((values) => {
         this.historicalValues = values;
@@ -128,6 +135,8 @@ export class HistoricalChartComponent implements OnInit, OnDestroy {
 
   onTimeRangeChange(range: string): void {
     this.timeRange = range;
+    // Save timeRange preference to localStorage
+    localStorage.setItem(this.STORAGE_KEY, range);
     this.updateChart();
   }
 
