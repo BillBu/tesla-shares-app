@@ -117,6 +117,45 @@ export class DailyChartComponent implements OnInit, OnDestroy {
             },
           },
         });
+      } else if (this.dailyCanvas) {
+        // Handle empty data case
+        const ctx = this.dailyCanvas.nativeElement.getContext('2d');
+        
+        this.dailyChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: 'Value in USD',
+                data: [],
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderWidth: 2,
+              },
+              {
+                label: 'Value in GBP',
+                data: [],
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 2,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: "No data available - Waiting for updates",
+              },
+              tooltip: {
+                mode: 'index',
+                intersect: false,
+              },
+            },
+          },
+        });
       }
     }, 0);
   }

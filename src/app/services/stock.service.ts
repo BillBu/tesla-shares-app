@@ -149,8 +149,16 @@ export class StockService {
         }),
         catchError((error) => {
           console.error('Error fetching current quote:', error);
-          // On error, we'll use a mock/fallback price so the app doesn't break
-          return of(750.25); // Fallback price for TSLA
+          
+          // Use most recent cached price if available
+          const cachedPrice = localStorage.getItem(this.STORAGE_KEY_CURRENT_PRICE);
+          if (cachedPrice) {
+            return of(parseFloat(cachedPrice));
+          }
+          
+          // If no cached price is available, use a default but log as error
+          console.error('No cached price available, using default');
+          return of(0); // Return 0 to indicate no data, better than fake data
         })
       )
       .subscribe((price) => {
@@ -162,6 +170,7 @@ export class StockService {
   /**
    * Get historical stock data (for the past 2 years)
    * @param forceUpdate Force an update even if we have recent data
+   * @returns Returns cached data if available, or empty array if the API fails and no cached data exists
    */
   getStockData(forceUpdate: boolean = false) {
     // Check if we have data and if it was updated recently (within last 24 hours)
@@ -270,12 +279,13 @@ export class StockService {
         catchError((error) => {
           console.error('Error fetching historical stock data:', error);
           
-          // If we have existing data, use that instead of mock data
+          // If we have existing data, use that instead
           if (existingData.length > 0) {
             return of(existingData);
           }
           
-          return of(this.generateMockHistoricalData());
+          // Return empty array if no data can be loaded
+          return of([]);
         })
       )
       .subscribe((data) => {
@@ -286,6 +296,7 @@ export class StockService {
 
   /**
    * Get intraday stock data for today
+   * @returns Returns cached data if available, or empty array if the API fails and no cached data exists
    */
   getIntradayData() {
     const now = new Date();
@@ -391,12 +402,13 @@ export class StockService {
         catchError((error) => {
           console.error('Error fetching intraday stock data:', error);
           
-          // If we have existing data, use that instead of mock data
+          // If we have existing data, use that instead
           if (existingData.length > 0) {
             return of(existingData);
           }
           
-          return of(this.generateMockIntradayData());
+          // Return empty array if no data can be loaded
+          return of([]);
         })
       )
       .subscribe((data) => {
@@ -405,60 +417,7 @@ export class StockService {
       });
   }
 
-  /**
-   * Generate mock historical data in case the API fails
-   */
-  private generateMockHistoricalData(): StockData[] {
-    const mockData: StockData[] = [];
-    const now = new Date();
-    const twoYearsAgo = new Date();
-    twoYearsAgo.setFullYear(now.getFullYear() - 2);
+  // Method removed - we don't generate mock data anymore
 
-    // Start with a base price
-    let currentPrice = 700;
-
-    // Create a data point for every 3 days over the past 2 years
-    for (let d = twoYearsAgo; d <= now; d.setDate(d.getDate() + 3)) {
-      // Some random price movement (between -5% and +5%)
-      const change = currentPrice * (Math.random() * 0.1 - 0.05);
-      currentPrice += change;
-
-      mockData.push({
-        date: new Date(d),
-        price: Math.max(100, currentPrice), // Ensure price doesn't go too low
-      });
-    }
-
-    return mockData;
-  }
-
-  /**
-   * Generate mock intraday data in case the API fails
-   */
-  private generateMockIntradayData(): StockData[] {
-    const mockData: StockData[] = [];
-    const now = new Date();
-    const today = new Date();
-    today.setHours(9, 30, 0, 0); // Market open
-
-    // Use current price as base, or a default if we don't have one
-    let currentPrice = this.currentStockPrice.getValue() || 750;
-
-    // Create a data point for every 5 minutes
-    while (today < now) {
-      // Random price movement (between -1% and +1%)
-      const change = currentPrice * (Math.random() * 0.02 - 0.01);
-      currentPrice += change;
-
-      mockData.push({
-        date: new Date(today),
-        price: currentPrice,
-      });
-
-      // Add 5 minutes
-      today.setMinutes(today.getMinutes() + 5);
-    }
-
-    return mockData;
-  }
+  // Method removed - we don't generate mock data anymore
 }

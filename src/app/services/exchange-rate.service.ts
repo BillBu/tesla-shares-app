@@ -130,6 +130,10 @@ export class ExchangeRateService {
     }
   }
 
+  /**
+   * Get the current exchange rate
+   * @returns Returns the latest exchange rate, or cached rate if API fails
+   */
   getCurrentRate() {
     // Use Frankfurter API which is free without API key limits
     this.http
@@ -143,14 +147,31 @@ export class ExchangeRateService {
             console.log('Live exchange rate fetched:', rate);
             return rate;
           } else {
-            // If API request failed, fallback to a sensible default
-            console.error('API request failed, using fallback value');
+            // If API request failed
+            console.error('API request failed');
+            
+            // Use most recent cached rate if available
+            const cachedRate = localStorage.getItem(this.STORAGE_KEY_CURRENT_RATE);
+            if (cachedRate) {
+              return parseFloat(cachedRate);
+            }
+            
+            // If no cached rate, use a default value, but log this as an error
+            console.error('No cached exchange rate available, using default');
             return 0.78;
           }
         }),
         catchError((error) => {
           console.error('Error fetching exchange rate data:', error);
-          // Fallback to a sensible default value on error
+          
+          // Use most recent cached rate if available
+          const cachedRate = localStorage.getItem(this.STORAGE_KEY_CURRENT_RATE);
+          if (cachedRate) {
+            return of(parseFloat(cachedRate));
+          }
+          
+          // If no cached rate, use a default value, but log this as an error
+          console.error('No cached exchange rate available, using default');
           return of(0.78);
         })
       )
@@ -170,6 +191,11 @@ export class ExchangeRateService {
       });
   }
 
+  /**
+   * Get historical exchange rates data
+   * @param forceUpdate Force an update even if we have recent data
+   * @returns Returns cached data if available, or empty array if the API fails and no cached data exists
+   */
   getHistoricalRates(forceUpdate: boolean = false) {
     // Check if we have data and if it was updated recently (within last week)
     const lastUpdate = localStorage.getItem(this.STORAGE_KEY_LAST_HISTORICAL_UPDATE);
@@ -269,27 +295,27 @@ export class ExchangeRateService {
             // Sort by date
             return combinedData.sort((a, b) => a.date.getTime() - b.date.getTime());
           } else {
-            console.error('API request failed, using generated data');
+            console.error('API request failed');
             
-            // If we have existing data, use that instead of mock data
+            // If we have existing data, use that instead
             if (existingData.length > 0) {
               return existingData;
             }
             
-            // Fallback to generating data
-            return this.generateMockHistoricalData();
+            // Return empty array if no data can be loaded
+            return [];
           }
         }),
         catchError((error) => {
           console.error('Error fetching historical exchange rate data:', error);
           
-          // If we have existing data, use that instead of mock data
+          // If we have existing data, use that instead
           if (existingData.length > 0) {
             return of(existingData);
           }
           
-          // Fallback to generating data
-          return of(this.generateMockHistoricalData());
+          // Return empty array if no data can be loaded
+          return of([]);
         })
       )
       .subscribe((data) => {
@@ -298,30 +324,5 @@ export class ExchangeRateService {
       });
   }
 
-  // Helper method to generate mock data if the API call fails or doesn't have timeseries access
-  private generateMockHistoricalData(): ExchangeRateData[] {
-    console.log('Generating mock historical data');
-    const historicalData: ExchangeRateData[] = [];
-    const today = new Date();
-    const twoYearsAgo = new Date();
-    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
-
-    // Generate a rate for each day in the last 2 years
-    for (
-      let d = new Date(twoYearsAgo);
-      d <= today;
-      d.setDate(d.getDate() + 1)
-    ) {
-      // Generate a somewhat realistic exchange rate (0.75-0.82 range)
-      const randomVariation = Math.sin(d.getTime() / 10000000000) * 0.035;
-      const rate = 0.785 + randomVariation;
-
-      historicalData.push({
-        date: new Date(d),
-        rate: rate,
-      });
-    }
-
-    return historicalData;
-  }
+  // Method removed - we don't generate mock data anymore
 }
