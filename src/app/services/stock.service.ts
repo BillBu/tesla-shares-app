@@ -8,7 +8,7 @@ import { StockData, StockDataResponse } from '../models/stock-data.model';
   providedIn: 'root',
 })
 export class StockService {
-  private apiKey = 'demo'; // Replace with your Alpha Vantage API key
+  private apiKey = 'WTMTQ0JIU7OF85FY'; // Replace with your Alpha Vantage API key
   private baseUrl = 'https://www.alphavantage.co/query';
   private symbol = 'TSLA';
 
