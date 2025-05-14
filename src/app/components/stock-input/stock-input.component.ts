@@ -15,11 +15,11 @@ export class StockInputComponent {
 
   constructor(private shareValueService: ShareValueService) {
     // Initialize shares from the service which loads from localStorage
-    this.shareValueService.numberOfShares$.subscribe(shares => {
+    this.shareValueService.numberOfShares$.subscribe((shares) => {
       this.shares = shares;
     });
     // Initialize with the value from the service (which loads from localStorage)
-    this.shareValueService.numberOfShares$.subscribe(shares => {
+    this.shareValueService.numberOfShares$.subscribe((shares) => {
       this.shares = shares;
     });
   }

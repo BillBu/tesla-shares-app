@@ -10,7 +10,9 @@ import { ShareValue } from '../models/share-value.model';
 })
 export class ShareValueService {
   private readonly SHARES_STORAGE_KEY = 'tesla-app-shares';
-  private numberOfShares = new BehaviorSubject<number>(this.getInitialShareCount());
+  private numberOfShares = new BehaviorSubject<number>(
+    this.getInitialShareCount()
+  );
   numberOfShares$ = this.numberOfShares.asObservable();
 
   // Observables
