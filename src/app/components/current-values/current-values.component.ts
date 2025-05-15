@@ -6,10 +6,12 @@ import { ShareValueService } from '../../services/share-value.service';
 import {
   Observable,
   Subscription,
+  combineLatest,
   interval,
   map,
   shareReplay,
   startWith,
+  timer,
 } from 'rxjs';
 
 @Component({
@@ -25,13 +27,19 @@ export class CurrentValuesComponent implements OnInit, OnDestroy {
   currentUsdValue$: Observable<number>;
   currentGbpValue$: Observable<number>;
   isOnline$: Observable<boolean>;
+
+  // Combined last updated observable - latest time from either service
   lastUpdated$: Observable<Date | null>;
 
   // Computed observable for formatted last updated time
   formattedLastUpdated$!: Observable<string>;
 
+  // Refreshing state
+  isRefreshing = false;
+
   // Store subscription to clean up on destroy
   private timerSubscription: Subscription | null = null;
+  private refreshSubscription: Subscription | null = null;
 
   constructor(
     private stockService: StockService,
@@ -43,7 +51,21 @@ export class CurrentValuesComponent implements OnInit, OnDestroy {
     this.currentUsdValue$ = this.shareValueService.currentUsdValue$;
     this.currentGbpValue$ = this.shareValueService.currentGbpValue$;
     this.isOnline$ = this.stockService.isOnline$;
-    this.lastUpdated$ = this.stockService.getLastUpdated();
+
+    // Use the most recent update time from either service
+    this.lastUpdated$ = combineLatest([
+      this.stockService.getLastUpdated(),
+      this.exchangeRateService.getLastUpdated(),
+    ]).pipe(
+      map(([stockTime, rateTime]) => {
+        // If either time is null, return the other one
+        if (!stockTime) return rateTime;
+        if (!rateTime) return stockTime;
+
+        // Return the more recent timestamp
+        return stockTime.getTime() > rateTime.getTime() ? stockTime : rateTime;
+      })
+    );
   }
 
   ngOnInit() {
@@ -54,10 +76,13 @@ export class CurrentValuesComponent implements OnInit, OnDestroy {
     );
 
     // Format the last updated time as a readable string, updating every minute
-    this.formattedLastUpdated$ = timer$.pipe(
-      map(() => {
-        // Get the current last updated value
-        const date = this.stockService.getLastUpdatedValue();
+    this.formattedLastUpdated$ = combineLatest([
+      timer$,
+      this.lastUpdated$,
+    ]).pipe(
+      map(([_, lastUpdated]) => {
+        // Get the most recent update time (from either stock or exchange rate)
+        const date = lastUpdated;
 
         if (!date) return 'Never';
 
@@ -84,10 +109,40 @@ export class CurrentValuesComponent implements OnInit, OnDestroy {
     this.timerSubscription = this.formattedLastUpdated$.subscribe();
   }
 
+  /**
+   * Manually refresh both stock and exchange rate data
+   */
+  refreshData(): void {
+    if (!navigator.onLine) return;
+
+    this.isRefreshing = true;
+
+    const refresh$ = combineLatest([
+      this.stockService.refreshData(),
+      this.exchangeRateService.refreshData(),
+    ]);
+
+    this.refreshSubscription = refresh$.subscribe({
+      next: () => {
+        this.isRefreshing = false;
+      },
+      error: (err) => {
+        console.error('Error refreshing data:', err);
+        this.isRefreshing = false;
+      },
+      complete: () => {
+        this.isRefreshing = false;
+      },
+    });
+  }
+
   ngOnDestroy() {
     // Clean up subscriptions when the component is destroyed
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
+    }
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
     }
   }
 }

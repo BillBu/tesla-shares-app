@@ -4,6 +4,10 @@
       <h5 class="mb-0">Current Values</h5>
       <div class="d-flex align-items-center">
         <small class="me-2">Last updated: {{ formattedLastUpdated$ | async }}</small>
+        <button type="button" class="btn btn-sm btn-light me-2" (click)="refreshData()"
+          [disabled]="!(isOnline$ | async)" title="Refresh data">
+          <i class="bi bi-arrow-clockwise" [class.rotating]="isRefreshing"></i>
+        </button>
         <span class="online-indicator" [ngClass]="{'online': (isOnline$ | async), 'offline': !(isOnline$ | async)}"
           [title]="(isOnline$ | async) ? 'Online' : 'Offline'">
           •

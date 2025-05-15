@@ -10,6 +10,7 @@ import {
 } from 'rxjs';
 import { map, catchError, debounceTime } from 'rxjs/operators';
 import { StockData } from '../models/stock-data.model';
+import { VisibilityService } from './visibility.service';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,10 @@ export class StockService {
 
   private lastUpdated = new BehaviorSubject<Date | null>(null);
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private visibilityService: VisibilityService
+  ) {
     // Load cached data first
     this.loadCachedData();
 
@@ -51,6 +55,9 @@ export class StockService {
         this.getQuote();
       }
     });
+
+    // Set up visibility and focus change handling
+    this.setupVisibilityHandling();
   }
 
   /**
@@ -72,6 +79,29 @@ export class StockService {
     offline$.subscribe(() => {
       console.log('App is offline');
       this.isOnline.next(false);
+    });
+  }
+
+  /**
+   * Sets up visibility and focus change handling
+   */
+  private setupVisibilityHandling() {
+    // Listen for app resumed events (visibility or focus changes)
+    this.visibilityService.appResumed$.subscribe((resumed) => {
+      if (resumed && navigator.onLine) {
+        console.log('App resumed, checking if refresh needed');
+
+        // Check if we need to update based on time elapsed
+        const lastUpdatedValue = this.lastUpdated.getValue();
+        if (this.visibilityService.shouldUpdate(lastUpdatedValue)) {
+          console.log(
+            'Refreshing stock data due to app resumed + time elapsed'
+          );
+          this.getQuote();
+        } else {
+          console.log('Recent update exists, skipping refresh');
+        }
+      }
     });
   }
 
@@ -172,5 +202,15 @@ export class StockService {
         this.currentStockPrice.next(price);
         this.saveCurrentPrice(price);
       });
+  }
+
+  /**
+   * Manually refresh the stock price
+   * @returns An observable that completes when refresh is done
+   */
+  refreshData(): Observable<number> {
+    console.log('Manually refreshing stock data');
+    this.getQuote();
+    return this.currentStockPrice$;
   }
 }
