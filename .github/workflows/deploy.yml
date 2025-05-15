@@ -41,7 +41,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/tesla-shares-app
+          path: dist/tesla-shares-app/browser
 
       - name: Deploy to GitHub Pages
         id: deployment

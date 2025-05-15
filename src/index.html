@@ -20,7 +20,9 @@
       const redirect = sessionStorage.redirect;
       delete sessionStorage.redirect;
       if (redirect && redirect !== location.href) {
-        history.replaceState(null, null, redirect.replace('/tesla-shares-app', ''));
+        // Don't strip out the base path when replacing the state
+        const newPath = redirect.replace(location.origin, '');
+        history.replaceState(null, null, newPath);
       }
     })();
   </script>
