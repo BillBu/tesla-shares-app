@@ -30,6 +30,7 @@
                 "glob": "**/*",
                 "input": "public"
               },
+              "src/favicon.ico",
               "src/404.html"
             ],
             "styles": [
