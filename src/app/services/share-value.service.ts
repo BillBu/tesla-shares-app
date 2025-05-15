@@ -44,12 +44,12 @@ export class ShareValueService {
       const storedValue = localStorage.getItem(this.SHARES_STORAGE_KEY);
       if (storedValue) {
         const parsedValue = parseInt(storedValue, 10);
-        return !isNaN(parsedValue) ? parsedValue : 0;
+        return !isNaN(parsedValue) ? parsedValue : 1;
       }
     } catch (error) {
       console.error('Error accessing localStorage:', error);
     }
-    return 0;
+    return 1;
   }
 
   private saveShareCountToLocalStorage(shares: number): void {

@@ -18,10 +18,6 @@ export class StockInputComponent {
     this.shareValueService.numberOfShares$.subscribe((shares) => {
       this.shares = shares;
     });
-    // Initialize with the value from the service (which loads from localStorage)
-    this.shareValueService.numberOfShares$.subscribe((shares) => {
-      this.shares = shares;
-    });
   }
 
   onSharesChanged() {
