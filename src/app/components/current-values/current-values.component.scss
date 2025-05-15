@@ -1,0 +1,21 @@
+.online-indicator {
+  display: inline-block;
+  font-size: 1.5rem;
+  line-height: 1;
+  margin-top: -3px;
+
+  &.online {
+    color: #28a745; // Green
+  }
+
+  &.offline {
+    color: #dc3545; // Red
+  }
+}
+
+.card-header {
+  .online-indicator {
+    color: white;
+    opacity: 0.8;
+  }
+}

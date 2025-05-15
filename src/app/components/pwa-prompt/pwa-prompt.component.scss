@@ -1,0 +1,60 @@
+.install-prompt {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  z-index: 1000;
+  border-top: 3px solid #e82127; // Tesla red color
+
+  .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .message {
+      flex: 1;
+
+      strong {
+        font-size: 1.1rem;
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      p {
+        margin: 0;
+        color: #555;
+      }
+    }
+
+    .install-button {
+      background-color: #e82127; // Tesla red color
+      border-color: #e82127;
+      margin-left: 15px;
+
+      &:hover {
+        background-color: #c21c21; // Darkened Tesla red color (manually calculated)
+        border-color: #c21c21; // Darkened Tesla red color
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .install-prompt .content {
+    flex-direction: column;
+
+    .message {
+      margin-bottom: 10px;
+    }
+
+    .install-button {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+}

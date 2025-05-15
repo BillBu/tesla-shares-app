@@ -10,6 +10,7 @@ An Angular web application that tracks Tesla stock prices and converts the value
 - View daily chart with 5-minute updates
 - View historical chart with data for the last 2 years
 - Time range selection for historical data (2 years, 1 year, 6 months, 1 month, 1 week)
+- Progressive Web App (PWA) functionality for offline use and installation on mobile devices
 
 ## Technology Stack
 
@@ -59,6 +60,49 @@ The app is deployed on GitHub Pages at: https://[username].github.io/tesla-share
    ```
 
 5. Navigate to `http://localhost:4200/` in your browser.
+
+## Progressive Web App (PWA) Features
+
+This application is a full Progressive Web App (PWA) that can be installed on desktop, Android, and iOS devices. Key PWA features include:
+
+### Offline Functionality
+
+- Works offline with cached data
+- Shows offline status indicator
+- Automatically refreshes data when back online
+
+### App Installation Options
+
+The app can be installed as a standalone application on:
+
+- Android devices via Chrome
+- iOS devices via Safari
+- Desktop computers via Chrome, Edge, or other compatible browsers
+
+### Testing PWA Features
+
+To test the PWA functionality:
+
+1. Build and serve the PWA locally:
+
+   ```bash
+   npm run serve:pwa
+   ```
+
+2. Open Chrome and navigate to `http://localhost:8080`
+
+3. In Chrome DevTools:
+
+   - Go to Application tab
+   - Check "Offline" in Service Workers section to simulate offline mode
+   - Go to "Manifest" section to verify install capability
+
+4. To test on mobile devices:
+   - Ensure your computer and mobile device are on the same network
+   - Find your computer's IP address
+   - On your mobile device, navigate to `http://[your-ip-address]:8080`
+   - For iOS: use Safari and add to home screen
+   - For Android: use Chrome and look for the install prompt
 
 ## Deployment
 

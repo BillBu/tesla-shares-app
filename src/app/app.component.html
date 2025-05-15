@@ -1,7 +1,10 @@
 <div class="container-fluid py-4">
-  <header class="mb-4 text-center">
+  <header class="mb-4 text-center position-relative">
     <h1 class="display-4">{{ title }}</h1>
     <p class="lead">Monitor your Tesla share value in USD and GBP</p>
+    <div class="position-absolute top-0 end-0 mt-2 me-2">
+      <app-install-button [isHeader]="true"></app-install-button>
+    </div>
   </header>
 
   <app-stock-input></app-stock-input>
@@ -10,5 +13,6 @@
   <!-- <app-historical-chart></app-historical-chart> -->
 </div>
 
+<app-pwa-prompt></app-pwa-prompt>
 
 <router-outlet />

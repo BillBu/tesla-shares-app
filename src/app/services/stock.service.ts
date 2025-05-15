@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, BehaviorSubject, interval, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import {
+  Observable,
+  BehaviorSubject,
+  interval,
+  of,
+  fromEvent,
+  merge,
+} from 'rxjs';
+import { map, catchError, debounceTime } from 'rxjs/operators';
 import { StockData } from '../models/stock-data.model';
 
 @Injectable({
@@ -18,9 +25,15 @@ export class StockService {
 
   // Storage keys
   private readonly STORAGE_KEY_CURRENT_PRICE = 'tesla-app-current-price';
+  private readonly STORAGE_KEY_LAST_UPDATED = 'tesla-app-last-updated';
 
   private currentStockPrice = new BehaviorSubject<number>(0);
   currentStockPrice$ = this.currentStockPrice.asObservable();
+
+  private isOnline = new BehaviorSubject<boolean>(navigator.onLine);
+  isOnline$ = this.isOnline.asObservable();
+
+  private lastUpdated = new BehaviorSubject<Date | null>(null);
 
   constructor(private http: HttpClient) {
     // Load cached data first
@@ -29,9 +42,36 @@ export class StockService {
     // Initial data load
     this.getQuote();
 
-    // Update data every 5 minutes
+    // Monitor online status
+    this.setupOnlineOfflineHandling();
+
+    // Update data every 5 minutes if online
     interval(5 * 60 * 1000).subscribe(() => {
+      if (navigator.onLine) {
+        this.getQuote();
+      }
+    });
+  }
+
+  /**
+   * Sets up online/offline event handlers
+   */
+  private setupOnlineOfflineHandling() {
+    // Create observables for the online and offline events
+    const online$ = fromEvent(window, 'online');
+    const offline$ = fromEvent(window, 'offline');
+
+    // Update the isOnline BehaviorSubject when online/offline events fire
+    online$.subscribe(() => {
+      console.log('App is online');
+      this.isOnline.next(true);
+      // Refresh data when we come back online
       this.getQuote();
+    });
+
+    offline$.subscribe(() => {
+      console.log('App is offline');
+      this.isOnline.next(false);
     });
   }
 
@@ -45,6 +85,15 @@ export class StockService {
       if (cachedPrice) {
         this.currentStockPrice.next(parseFloat(cachedPrice));
       }
+
+      // Load last updated timestamp
+      const lastUpdatedStr = localStorage.getItem(
+        this.STORAGE_KEY_LAST_UPDATED
+      );
+      if (lastUpdatedStr) {
+        const lastUpdatedDate = new Date(lastUpdatedStr);
+        this.lastUpdated.next(lastUpdatedDate);
+      }
     } catch (error) {
       console.error('Error loading cached data:', error);
     }
@@ -56,15 +105,33 @@ export class StockService {
   private saveCurrentPrice(price: number) {
     try {
       localStorage.setItem(this.STORAGE_KEY_CURRENT_PRICE, price.toString());
+
+      // Also save the timestamp
+      const now = new Date();
+      localStorage.setItem(this.STORAGE_KEY_LAST_UPDATED, now.toISOString());
+      this.lastUpdated.next(now);
     } catch (error) {
       console.error('Error saving current price to storage:', error);
     }
   }
 
   /**
+   * Get the last updated timestamp as an Observable
+   */
+  getLastUpdated(): Observable<Date | null> {
+    return this.lastUpdated.asObservable();
+  }
+
+  /**
    * Get the current quote for the stock
    */
   getQuote() {
+    // If offline, use cached data
+    if (!navigator.onLine) {
+      console.log('App is offline, using cached data');
+      return;
+    }
+
     const params = {
       symbol: this.symbol,
       token: this.apiKey, // API key as query parameter for browser-based requests

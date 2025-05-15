@@ -1,0 +1,11 @@
+<div *ngIf="canInstall" class="install-prompt">
+  <div class="content">
+    <div class="message">
+      <strong>Install Tesla Shares App</strong>
+      <p>Install this app on your device for quick and easy access when you're on the go.</p>
+    </div>
+    <button type="button" class="btn btn-primary install-button" (click)="installPwa()">
+      Install
+    </button>
+  </div>
+</div>
