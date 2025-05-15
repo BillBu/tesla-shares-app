@@ -28,7 +28,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build
         run: npm run build -- --configuration production --base-href="/tesla-shares-app/"
@@ -41,7 +41,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/tesla-shares-app/browser
+          path: dist/tesla-shares-app
 
       - name: Deploy to GitHub Pages
         id: deployment
