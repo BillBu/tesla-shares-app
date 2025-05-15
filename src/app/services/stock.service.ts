@@ -254,7 +254,7 @@ export class StockService {
       .pipe(
         map((response) => {
           const newStockData: StockData[] = [];
-
+          console.log(`Response from Finnhub:`, response);
           // Finnhub returns separate arrays for timestamps (t), close prices (c), etc.
           if (response?.s === 'ok' && response.t && response.c) {
             for (let i = 0; i < response.t.length; i++) {
