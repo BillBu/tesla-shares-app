@@ -121,6 +121,13 @@ export class StockService {
   getLastUpdated(): Observable<Date | null> {
     return this.lastUpdated.asObservable();
   }
+  
+  /**
+   * Get the current value of the lastUpdated BehaviorSubject
+   */
+  getLastUpdatedValue(): Date | null {
+    return this.lastUpdated.getValue();
+  }
 
   /**
    * Get the current quote for the stock
