@@ -18,9 +18,6 @@ export class ShareValueService {
   // Observables
   currentUsdValue$: Observable<number>;
   currentGbpValue$: Observable<number>;
-  dailyValues$: Observable<ShareValue[]>;
-  historicalValues$: Observable<ShareValue[]>;
-
   constructor(
     private stockService: StockService,
     private exchangeRateService: ExchangeRateService
@@ -35,93 +32,6 @@ export class ShareValueService {
       this.currentUsdValue$,
       this.exchangeRateService.currentExchangeRate$,
     ]).pipe(map(([usdValue, rate]) => usdValue * rate));
-
-    // Daily chart values
-    this.dailyValues$ = combineLatest([
-      this.stockService.intradayData$,
-      this.exchangeRateService.intradayRates$,
-      this.numberOfShares$,
-    ]).pipe(
-      map(([stockData, rateData, shares]) => {
-        const values: ShareValue[] = [];
-
-        // Match up stock prices with exchange rates based on closest timestamps
-        stockData.forEach((stockPoint) => {
-          const stockTime = stockPoint.date.getTime();
-
-          // Find the closest exchange rate timestamp
-          let closestRatePoint = rateData[0];
-          let smallestDiff = Number.MAX_VALUE;
-
-          rateData.forEach((ratePoint) => {
-            const diff = Math.abs(ratePoint.date.getTime() - stockTime);
-            if (diff < smallestDiff) {
-              smallestDiff = diff;
-              closestRatePoint = ratePoint;
-            }
-          });
-
-          if (closestRatePoint) {
-            const usdValue = stockPoint.price * shares;
-            const gbpValue = usdValue * closestRatePoint.rate;
-
-            values.push({
-              date: new Date(stockPoint.date),
-              usdValue,
-              gbpValue,
-            });
-          }
-        });
-
-        return values;
-      })
-    );
-
-    // Historical chart values
-    this.historicalValues$ = combineLatest([
-      this.stockService.historicalData$,
-      this.exchangeRateService.historicalRates$,
-      this.numberOfShares$,
-    ]).pipe(
-      map(([stockData, rateData, shares]) => {
-        const values: ShareValue[] = [];
-
-        // Match up stock prices with exchange rates based on closest dates
-        stockData.forEach((stockPoint) => {
-          const stockDate = new Date(stockPoint.date);
-          stockDate.setHours(0, 0, 0, 0);
-          const stockTime = stockDate.getTime();
-
-          // Find the closest exchange rate date
-          let closestRatePoint = rateData[0];
-          let smallestDiff = Number.MAX_VALUE;
-
-          rateData.forEach((ratePoint) => {
-            const rateDate = new Date(ratePoint.date);
-            rateDate.setHours(0, 0, 0, 0);
-            const diff = Math.abs(rateDate.getTime() - stockTime);
-
-            if (diff < smallestDiff) {
-              smallestDiff = diff;
-              closestRatePoint = ratePoint;
-            }
-          });
-
-          if (closestRatePoint) {
-            const usdValue = stockPoint.price * shares;
-            const gbpValue = usdValue * closestRatePoint.rate;
-
-            values.push({
-              date: new Date(stockPoint.date),
-              usdValue,
-              gbpValue,
-            });
-          }
-        });
-
-        return values;
-      })
-    );
   }
 
   updateNumberOfShares(shares: number) {
