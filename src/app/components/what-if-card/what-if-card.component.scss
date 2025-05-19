@@ -1,0 +1,41 @@
+/* filepath: /Users/billburgar/dev/home/tesla-shares-app/src/app/components/what-if-card/what-if-card.component.scss */
+.what-if-card {
+  border: 1px solid #dee2e6;
+
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .form-check-input:checked {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+  }
+
+  h2.text-success {
+    color: #28a745 !important;
+  }
+
+  .custom-input {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    -moz-appearance: textfield;
+  }
+}
+
+.card-handle {
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
+}

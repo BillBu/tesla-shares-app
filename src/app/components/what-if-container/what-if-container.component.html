@@ -1,0 +1,29 @@
+<div class="what-if-container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">What If Scenarios</h5>
+    <button type="button" class="btn btn-info btn-sm" (click)="addWhatIfCard()" title="Add what-if scenario">
+      <i class="bi bi-plus-circle me-1"></i> Add Scenario
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <ng-container *ngIf="whatIfCards$ | async as whatIfCards">
+        <div cdkDropList class="what-if-list" (cdkDropListDropped)="onDrop($event)" [cdkDropListData]="whatIfCards">
+          <div class="drag-placeholder" *ngIf="whatIfCards.length === 0">
+            <div class="text-center p-4 border rounded bg-light">
+              <p class="mb-0">No what-if scenarios yet. Click "Add Scenario" to create one.</p>
+            </div>
+          </div>
+
+          <div *ngFor="let card of whatIfCards; trackBy: trackByCardId" cdkDrag class="drag-item">
+            <div class="drag-handle" cdkDragHandle>
+              <i class="bi bi-grip-horizontal"></i>
+            </div>
+            <app-what-if-card [card]="card" (delete)="deleteWhatIfCard($event)"></app-what-if-card>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

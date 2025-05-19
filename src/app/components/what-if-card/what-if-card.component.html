@@ -1,0 +1,94 @@
+<div class="card what-if-card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="input-group input-group-sm flex-grow-1 me-2">
+      <span class="input-group-text">Name</span>
+      <input type="text" class="form-control" #nameInput [ngModel]="cardForm.value.name"
+        (ngModelChange)="nameChange$.next($event)">
+    </div>
+    <button type="button" class="btn btn-sm btn-outline-danger" (click)="onDelete()" title="Delete scenario">
+      <i class="bi bi-dash-circle"></i>
+    </button>
+  </div>
+
+  <div class="card-body">
+    <div class="row g-3">
+      <!-- Stock Price Settings -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Tesla Share Price</h5>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" [formControl]="$any(cardForm.get('useCurrentStockPrice'))"
+                [value]="true" id="useCurrentStockPrice{{card.id}}">
+              <label class="form-check-label" for="useCurrentStockPrice{{card.id}}">
+                Use current price: ${{ currentStockPrice$ | async | number:'1.2-2' }}
+              </label>
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" [formControl]="$any(cardForm.get('useCurrentStockPrice'))"
+                [value]="false" id="useCustomStockPrice{{card.id}}">
+              <label class="form-check-label" for="useCustomStockPrice{{card.id}}">
+                Use custom price:
+              </label>
+            </div>
+            <div class="input-group mb-2" [class.disabled]="cardForm.value.useCurrentStockPrice">
+              <span class="input-group-text">$</span>
+              <input type="text" class="form-control custom-input" #stockPriceInput
+                [ngModel]="cardForm.value.customStockPrice || ''" [disabled]="cardForm.value.useCurrentStockPrice"
+                pattern="[0-9]*\.?[0-9]*" inputmode="decimal" autocomplete="off"
+                (ngModelChange)="stockPriceChange$.next($event)" (focus)="selectInput($event)">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exchange Rate Settings -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">USD to GBP Exchange Rate</h5>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" [formControl]="$any(cardForm.get('useCurrentExchangeRate'))"
+                [value]="true" id="useCurrentExchangeRate{{card.id}}">
+              <label class="form-check-label" for="useCurrentExchangeRate{{card.id}}">
+                Use current rate: {{ currentExchangeRate$ | async | number:'1.4-4' }}
+              </label>
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" [formControl]="$any(cardForm.get('useCurrentExchangeRate'))"
+                [value]="false" id="useCustomExchangeRate{{card.id}}">
+              <label class="form-check-label" for="useCustomExchangeRate{{card.id}}">
+                Use custom rate:
+              </label>
+            </div>
+            <div class="input-group mb-2" [class.disabled]="cardForm.value.useCurrentExchangeRate">
+              <input type="text" class="form-control custom-input" #exchangeRateInput
+                [ngModel]="cardForm.value.customExchangeRate || ''" [disabled]="cardForm.value.useCurrentExchangeRate"
+                pattern="[0-9]*\.?[0-9]*" inputmode="decimal" autocomplete="off"
+                (ngModelChange)="exchangeRateChange$.next($event)" (focus)="selectInput($event)">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calculated Values -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Value in USD</h5>
+            <h2 class="text-success">${{ (cardValue$ | async)?.usdValue | number:'1.0-0' }}</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Value in GBP</h5>
+            <h2 class="text-success">£{{ (cardValue$ | async)?.gbpValue | number:'1.0-0' }}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

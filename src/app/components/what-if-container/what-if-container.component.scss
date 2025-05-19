@@ -1,0 +1,45 @@
+/* filepath: /Users/billburgar/dev/home/tesla-shares-app/src/app/components/what-if-container/what-if-container.component.scss */
+.what-if-container {
+  .drag-handle {
+    cursor: grab;
+    color: #6c757d;
+    padding: 5px;
+    text-align: center;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    background-color: #f8f9fa;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  .cdk-drag-preview {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0.8;
+  }
+
+  .cdk-drag-placeholder {
+    opacity: 0.3;
+  }
+
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .drag-placeholder {
+    margin-bottom: 1rem;
+  }
+
+  .what-if-list.cdk-drop-list-dragging .drag-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .drag-item {
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

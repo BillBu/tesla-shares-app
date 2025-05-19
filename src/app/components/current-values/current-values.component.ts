@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { StockService } from '../../services/stock.service';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
 import { ShareValueService } from '../../services/share-value.service';
+import { WhatIfContainerComponent } from '../what-if-container/what-if-container.component';
 import {
   Observable,
   Subscription,
@@ -17,7 +18,7 @@ import {
 @Component({
   selector: 'app-current-values',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, WhatIfContainerComponent],
   templateUrl: './current-values.component.html',
   styleUrl: './current-values.component.scss',
 })
