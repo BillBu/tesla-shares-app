@@ -16,7 +16,7 @@
             </div>
           </div>
 
-          <div *ngFor="let card of whatIfCards" cdkDrag class="drag-item">
+          <div *ngFor="let card of whatIfCards; trackBy: trackByCardId" cdkDrag class="drag-item">
             <div class="drag-handle" cdkDragHandle>
               <i class="bi bi-grip-horizontal"></i>
             </div>

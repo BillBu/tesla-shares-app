@@ -20,6 +20,17 @@
   h2.text-success {
     color: #28a745 !important;
   }
+
+  .custom-input {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    -moz-appearance: textfield;
+  }
 }
 
 .card-handle {

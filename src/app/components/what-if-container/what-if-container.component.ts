@@ -51,4 +51,9 @@ export class WhatIfContainerComponent implements OnInit {
     const newOrder = cards.map((card) => card.id);
     this.whatIfCardService.reorderWhatIfCards(newOrder);
   }
+
+  // Track cards by ID to prevent unnecessary re-rendering
+  trackByCardId(index: number, card: WhatIfCard): string {
+    return card.id;
+  }
 }

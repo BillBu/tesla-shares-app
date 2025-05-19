@@ -2,7 +2,8 @@
   <div class="card-header d-flex justify-content-between align-items-center">
     <div class="input-group input-group-sm flex-grow-1 me-2">
       <span class="input-group-text">Name</span>
-      <input type="text" class="form-control" [formControl]="$any(cardForm.get('name'))">
+      <input type="text" class="form-control" #nameInput [ngModel]="cardForm.value.name"
+        (ngModelChange)="nameChange$.next($event)">
     </div>
     <button type="button" class="btn btn-sm btn-outline-danger" (click)="onDelete()" title="Delete scenario">
       <i class="bi bi-dash-circle"></i>
@@ -32,8 +33,10 @@
             </div>
             <div class="input-group mb-2" [class.disabled]="cardForm.value.useCurrentStockPrice">
               <span class="input-group-text">$</span>
-              <input type="number" class="form-control" [formControl]="$any(cardForm.get('customStockPrice'))"
-                [disabled]="cardForm.value.useCurrentStockPrice" step="0.01">
+              <input type="text" class="form-control custom-input" #stockPriceInput
+                [ngModel]="cardForm.value.customStockPrice || ''" [disabled]="cardForm.value.useCurrentStockPrice"
+                pattern="[0-9]*\.?[0-9]*" inputmode="decimal" autocomplete="off"
+                (ngModelChange)="stockPriceChange$.next($event)" (focus)="selectInput($event)">
             </div>
           </div>
         </div>
@@ -59,8 +62,10 @@
               </label>
             </div>
             <div class="input-group mb-2" [class.disabled]="cardForm.value.useCurrentExchangeRate">
-              <input type="number" class="form-control" [formControl]="$any(cardForm.get('customExchangeRate'))"
-                [disabled]="cardForm.value.useCurrentExchangeRate" step="0.0001">
+              <input type="text" class="form-control custom-input" #exchangeRateInput
+                [ngModel]="cardForm.value.customExchangeRate || ''" [disabled]="cardForm.value.useCurrentExchangeRate"
+                pattern="[0-9]*\.?[0-9]*" inputmode="decimal" autocomplete="off"
+                (ngModelChange)="exchangeRateChange$.next($event)" (focus)="selectInput($event)">
             </div>
           </div>
         </div>
