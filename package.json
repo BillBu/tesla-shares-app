@@ -22,7 +22,7 @@
     "@angular/forms": "^19.2.11",
     "@angular/platform-browser": "^19.2.11",
     "@angular/platform-browser-dynamic": "^19.2.11",
-    "@angular/router": "^19.2.11",
+    "@angular/router": "^20.0.4",
     "@angular/service-worker": "^19.2.11",
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.13.1",
