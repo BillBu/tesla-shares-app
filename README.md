@@ -1,5 +1,7 @@
 # Tesla Shares App
 
+Vibe coded demo.
+
 An Angular web application that tracks Tesla stock prices and converts the value to GB pounds using current exchange rates.
 
 ## Features
